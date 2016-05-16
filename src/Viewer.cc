@@ -22,6 +22,7 @@
 #include <pangolin/pangolin.h>
 
 #include <mutex>
+#include <unistd.h>
 
 namespace ORB_SLAM2
 {
@@ -31,7 +32,7 @@ Viewer::Viewer(System* pSystem, FrameDrawer *pFrameDrawer, MapDrawer *pMapDrawer
     mbFinishRequested(false), mbFinished(true), mbStopped(false), mbStopRequested(false)
 {
     cv::FileStorage fSettings(strSettingPath, cv::FileStorage::READ);
-
+    cv::namedWindow("ORB-SLAM2: Current Frame");
     float fps = fSettings["Camera.fps"];
     if(fps<1)
         fps=30;
@@ -55,6 +56,7 @@ void Viewer::Run()
 {
     mbFinished = false;
 
+    /*
     pangolin::CreateWindowAndBind("ORB-SLAM2: Map Viewer",1024,768);
 
     // 3D Mouse handler requires depth testing to be enabled
@@ -85,7 +87,7 @@ void Viewer::Run()
 
     pangolin::OpenGlMatrix Twc;
     Twc.SetIdentity();
-
+    */
     cv::namedWindow("ORB-SLAM2: Current Frame");
 
     bool bFollow = true;
@@ -93,6 +95,7 @@ void Viewer::Run()
 
     while(1)
     {
+	/*
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         mpMapDrawer->GetCurrentOpenGLCameraMatrix(Twc);
@@ -132,11 +135,14 @@ void Viewer::Run()
             mpMapDrawer->DrawMapPoints();
 
         pangolin::FinishFrame();
-
-        cv::Mat im = mpFrameDrawer->DrawFrame();
+	*/
+        
+	//std::cout << "Drawing Frame" << std::endl;
+	cv::Mat im = mpFrameDrawer->DrawFrame();
         cv::imshow("ORB-SLAM2: Current Frame",im);
         cv::waitKey(mT);
 
+	/*
         if(menuReset)
         {
             menuShowGraph = true;
@@ -162,6 +168,7 @@ void Viewer::Run()
 
         if(CheckFinish())
             break;
+	*/
     }
 
     SetFinish();

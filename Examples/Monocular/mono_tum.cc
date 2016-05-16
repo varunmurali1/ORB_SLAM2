@@ -29,6 +29,7 @@
 #include<System.h>
 
 using namespace std;
+#include <unistd.h>
 
 void LoadImages(const string &strFile, vector<string> &vstrImageFilenames,
                 vector<double> &vTimestamps);
@@ -59,6 +60,8 @@ int main(int argc, char **argv)
     cout << endl << "-------" << endl;
     cout << "Start processing sequence ..." << endl;
     cout << "Images in the sequence: " << nImages << endl << endl;
+	
+    cv::namedWindow("Current frame");
 
     // Main loop
     cv::Mat im;
@@ -66,7 +69,8 @@ int main(int argc, char **argv)
     {
         // Read image from file
         im = cv::imread(string(argv[3])+"/"+vstrImageFilenames[ni],CV_LOAD_IMAGE_UNCHANGED);
-        double tframe = vTimestamps[ni];
+        std::cout << string(string(argv[3])+"/"+vstrImageFilenames[ni]) << std::endl; 
+	double tframe = vTimestamps[ni];
 
         if(im.empty())
         {
@@ -75,6 +79,8 @@ int main(int argc, char **argv)
             return 1;
         }
 
+	//cv::imshow("Current frame", im);
+	//cv::waitKey(25);
 #ifdef COMPILEDWITHC11
         std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
 #else
@@ -120,7 +126,7 @@ int main(int argc, char **argv)
     cout << "mean tracking time: " << totaltime/nImages << endl;
 
     // Save camera trajectory
-    SLAM.SaveKeyFrameTrajectoryTUM("KeyFrameTrajectory.txt");
+    //SLAM.SaveKeyFrameTrajectoryTUM("KeyFrameTrajectory.txt");
 
     return 0;
 }
